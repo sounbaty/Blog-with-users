@@ -7,7 +7,6 @@ Bootstrap-Flask~=2.3.0
 Flask-SQLAlchemy~=3.0.5
 Flask-WTF~=1.1.1
 Flask-Gravatar~=0.5.0
-Flask-Login~=0.6.2
 WTForms~=3.0.1
 Flask-CKEditor~=0.4.6
 Gunicorn~=21.2.0
