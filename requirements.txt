@@ -1,10 +1,11 @@
 Pip~=23.2.1
 Flask~=2.2.5
-Jinja2==3.1.2
+Flask-Login~=0.6.2
 Werkzeug~=2.3.4
 SQLAlchemy~=2.0.19
-Flask-SQLAlchemy==3.0.5
-Flask-WTF==1.1.1
-WTForms==3.0.1
-Flask-CKEditor==0.4.6
+Bootstrap-Flask~=2.3.0
+Flask-SQLAlchemy~=3.0.5
+Flask-WTF~=1.1.1
+WTForms~=3.0.1
+Flask-CKEditor~=0.4.6
 Gunicorn~=21.2.0
