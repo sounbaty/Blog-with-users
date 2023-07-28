@@ -156,7 +156,7 @@ def logout():
 @app.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
     form = CommentsForm()
-    # requested_post = BlogPost.query.get(post_id)
+    requested_post = BlogPost.query.get(post_id)
     # comments = Comment.query.filter_by(post_id=post_id).all()
     # if form.validate_on_submit():
     #     if current_user.is_authenticated:
@@ -171,7 +171,7 @@ def show_post(post_id):
     #     else:
     #         flash("You need to login to comment.")
     #         return redirect(url_for("login"))
-    return render_template("post.html", form=form)
+    return render_template("post.html", post=requested_post, form=form)
 
 
 @app.route("/about")
