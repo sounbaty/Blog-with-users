@@ -1,3 +1,4 @@
+{% from "bootstrap/form.html" import render_form %}
 
 {% block content %}
 {% include "header.html" %}
@@ -30,6 +31,7 @@
         {% endif %}
         {% endwith %}
        
+       {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
 
       </div>
     </div>

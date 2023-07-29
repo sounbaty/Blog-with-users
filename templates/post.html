@@ -1,5 +1,5 @@
 {% include "header.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% from "bootstrap/form.html" import render_form %}
 
   <!-- Page Header -->
   <header class="masthead" style="background-image: url('{{post.img_url}}')">
@@ -34,7 +34,7 @@
 
             {{ ckeditor.load() }}
             {{ ckeditor.config(name='comment') }}
-            {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+            {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
           <hr>
 <!--           Comments Area -->
           <div class="col-lg-12 col-md-10 mx-auto comment">
