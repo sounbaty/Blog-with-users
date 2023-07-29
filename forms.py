@@ -29,3 +29,15 @@ class LoginForm(FlaskForm):
 class CommentsForm(FlaskForm):
     comment = CKEditorField('Comments', validators=[DataRequired()])
     submit = SubmitField("Submit Comment")
+
+
+class MyForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class RatingForm(FlaskForm):
+    rating = StringField('Rating', validators=[DataRequired()])
+    ranking = StringField('Ranking', validators=[DataRequired()])
+    review = StringField('Review', validators=[DataRequired()])
+    submit = SubmitField('Submit')

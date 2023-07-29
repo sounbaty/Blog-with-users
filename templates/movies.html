@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %} {% for movie in movies_list %} {% if loop.index % 3 == 1 %}
+<div class="row justify-content-center">
+    {% endif %}
+    <div class="box-item">
+        <div class="flip-box">
+            <div class="flip-box-front text-center" style="background-image: url('{{ movie.img_url }}');">
+                <div class="inner color-white">
+                    <h2 class="flip-box-front-header">{{ movie.ranking }}</h2>
+                </div>
+            </div>
+            <div class="flip-box-back text-center" style="background-color: gray">
+                <div class="inner color-white">
+                    <h3 class="flip-box-header">{{ movie.title }}</h3>
+                    <p>({{ movie.year }}) {{ movie.rating }}<svg class="bi" width="27" height="20"><use xlink:href="#star"></use></svg></p>
+                    <p>{{ movie.review }}</p>
+                    <p>{{ movie.description }}</p>
+                    <a href="{{ url_for('update', id=movie.id) }}" class="btn btn-primary">Update</a>
+                    <a href="{{ url_for('movie_delete', id=movie.id) }}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

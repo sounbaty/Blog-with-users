@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+{% for result in response %}
+      <div class="card v4 tight">
+        <div class="wrapper">
+          <div class="image">
+            <div class="poster">
+              <a href="{{ url_for('add_movie', id=result['id']) }}">
+                {% if result['poster_path'] == None %}
+                      <div class ="glyphicons_v2 picture grey poster no_image_holder w94_and_h141"></div>
+                {% else %}
+                      <img src="{{ prefix + result['poster_path'] }}">
+                {% endif %}
+              </a>
+            </div>
+          </div>
+          <div class="details">
+            <div class="wrapper">
+              <div class="title">
+                <div>
+                  <a href="{{ url_for('add_movie', id=result['id']) }}"><h3>{{ result['title'] }}</h3></a>
+                </div>
+                  <span class="release_date">{{ result['release_date'] }}</span>
+              </div>
+            </div>
+            <div class="overview">
+              <p>{{ result['overview'] }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    {% endfor %}
+{% endblock %}

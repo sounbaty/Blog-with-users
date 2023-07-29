@@ -1,14 +1,16 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from datetime import date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from forms import CreatePostForm, RegisterForm, LoginForm, CommentsForm
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentsForm, MyForm, RatingForm
 from flask_gravatar import Gravatar
 from functools import wraps
 import os
+from datetime import datetime
+import requests
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
@@ -72,8 +74,21 @@ class Comment(db.Model):
     text = db.Column(db.String(500), nullable=False)
 
 
+class Movies(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    rating = db.Column(db.Float)
+    ranking = db.Column(db.Integer)
+    review = db.Column(db.String(40))
+    img_url = db.Column(db.String(250), nullable=False)
+
+
 with app.app_context():
     db.create_all()
+
+year = datetime.now().year
 
 
 @login_manager.user_loader
@@ -232,6 +247,79 @@ def delete_post(post_id):
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for('get_all_posts'))
+
+
+url = "https://api.themoviedb.org/3/search/movie"
+id_url = "https://api.themoviedb.org/3/movie/"
+img_url_prefix = "https://image.tmdb.org/t/p/w600_and_h900_bestv2"
+thm_prefix = "https://image.tmdb.org/t/p/w94_and_h141_bestv2/"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": os.environ.get("TMDB_API")
+}
+
+
+@app.route("/movies")
+def movie_home():
+    movies_list = db.session.execute(db.select(Movies).order_by(Movies.ranking)).scalars()
+    return render_template("movies.html", movies_list=movies_list, year=year)
+
+
+@app.route("/add", methods=["POST", "GET"])
+def add():
+    form = MyForm()
+    if form.validate_on_submit():
+        parameter = {
+            "query": form.title.data,
+        }
+        response = requests.get(url, headers=headers, params=parameter).json()["results"]
+        return render_template("result.html", response=response, prefix=thm_prefix)
+
+    return render_template("add.html", form=form)
+
+
+@app.route("/new/id=<id>", methods=["POST", "GET"])
+def add_movie(id):
+    movie_link = f"{id_url}{id}"
+    if request.method == "GET":
+        response = requests.get(movie_link, headers=headers).json()
+        new_movie = Movies(
+            title=response["title"],
+            year=response["release_date"].split("-")[0],
+            description=response["overview"],
+            rating=0,
+            ranking=0,
+            review="none",
+            img_url=f"{img_url_prefix}{response['poster_path']}",
+        )
+        db.session.add(new_movie)
+        db.session.commit()
+        find = db.one_or_404(db.select(Movies).filter_by(title=response["title"]))
+        movie_id = find.id
+        return redirect(url_for("update", id=movie_id))
+
+
+@app.route("/update/id=<id>", methods=["POST", "GET"])
+def update(id):
+    form = RatingForm()
+    update_movie = db.get_or_404(Movies, id)
+    if form.validate_on_submit():
+        update_movie.rating = form.rating.data
+        update_movie.ranking = form.ranking.data
+        update_movie.review = form.review.data
+        db.session.commit()
+        return redirect(url_for("movie_home"))
+    return render_template("update.html", form=form, update_movie=update_movie)
+
+
+@app.route("/movie/<int:id>/delete", methods=["GET", "POST"])
+def movie_delete(id):
+    delete = db.get_or_404(Movies, id)
+    if request.method == "GET":
+        db.session.delete(delete)
+        db.session.commit()
+        return redirect(url_for("movie_home"))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8">
+
+      <h1>Update Movie Data</h1>
+      <label>Title:</label><p>{{ update_movie.title }}</p>
+      <label>Year:</label><p>{{ update_movie.year }}</p>
+      <label>Description:</label><p>{{ update_movie.description }}</p>
+      {{ render_form(form, novalidate=True) }}<a href="{{ url_for('movie_home') }}" class="btn btn-light">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
