@@ -140,7 +140,6 @@ def make_admin(user_email):
         user = User.query.filter_by(email=user_email).first()
         user.is_admin = True
         db.session.commit()
-make_admin("hadmin@gmail.com")
 
 
 @app.route('/login', methods=["GET", "POST"])
